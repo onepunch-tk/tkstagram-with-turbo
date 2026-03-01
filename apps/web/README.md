@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+# Tkstagram - Web
+
+Tkstagram의 프론트엔드 애플리케이션. React Router v7 (framework mode) 기반.
+
+## Tech Stack
+
+- **Framework**: [React Router v7](https://reactrouter.com/) (SSR)
+- **Language**: TypeScript
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Bundler**: [Vite](https://vite.dev/)
+- **Linter/Formatter**: [Biome](https://biomejs.dev/)
 
 ## Getting Started
 
-First, run the development server:
+루트 디렉토리에서 의존성 설치 후 실행:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`http://localhost:5173`에서 확인 가능.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Inter, a custom Google Font.
+| 명령어 | 설명 |
+|--------|------|
+| `bun run dev` | 개발 서버 실행 (HMR) |
+| `bun run build` | 프로덕션 빌드 |
+| `bun run start` | 빌드된 서버 실행 |
+| `bun run check-types` | TypeScript 타입 체크 |
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+apps/web/
+├── app/
+│   ├── routes/       # 페이지 라우트
+│   ├── welcome/      # Welcome 컴포넌트
+│   ├── app.css        # 글로벌 스타일
+│   ├── root.tsx       # 루트 레이아웃
+│   └── routes.ts      # 라우트 설정
+├── public/            # 정적 파일
+├── biome.json         # Biome 설정 (extends @repo/biome-config)
+├── vite.config.ts     # Vite 설정
+└── react-router.config.ts
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Docker
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+docker build -t tkstagram-web .
+docker run -p 3000:3000 tkstagram-web
+```
