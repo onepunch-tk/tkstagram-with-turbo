@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import LoginForm from "../components/login-form";
 
 export default function Login() {
 	return (
@@ -13,6 +14,7 @@ export default function Login() {
 						</Link>
 					</p>
 				</div>
+				<LoginForm onSubmit={async (data) => console.log(data)} />
 			</div>
 		</div>
 	);

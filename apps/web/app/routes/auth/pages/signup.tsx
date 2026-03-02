@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import SignupForm from "../components/signup-form";
 
 export default function Signup() {
 	return (
@@ -13,6 +14,7 @@ export default function Signup() {
 						</Link>
 					</p>
 				</div>
+				<SignupForm onSubmit={async (data) => console.log(data)} />
 			</div>
 		</div>
 	);
