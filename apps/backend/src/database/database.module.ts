@@ -25,5 +25,6 @@ import { DATABASE_CONNECTION } from "./database-connection";
 			inject: [ConfigService],
 		},
 	],
+	exports: [DATABASE_CONNECTION],
 })
 export class DatabaseModule {}
