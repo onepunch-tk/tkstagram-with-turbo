@@ -6,9 +6,9 @@ import {
 	Scripts,
 	ScrollRestoration,
 } from "react-router";
-
 import type { Route } from "./+types/root";
 import "./globals.css";
+import ThemeProvider from "@/components/theme/theme-provider";
 
 export const links: Route.LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -24,8 +24,9 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+	// suppressHydrationWarning: 다크모드 초기 적용 시 hydration 경고 방지
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -33,9 +34,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<Links />
 			</head>
 			<body>
-				{children}
-				<ScrollRestoration />
-				<Scripts />
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="system"
+					enableSystem
+					disableTransitionOnChange
+				>
+					{children}
+					<ScrollRestoration />
+					<Scripts />
+				</ThemeProvider>
 			</body>
 		</html>
 	);
