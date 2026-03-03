@@ -1,3 +1,4 @@
+import Stories from "@/components/dashboard/stories";
 import type { Route } from "./+types/home";
 
 export function meta(_args: Route.MetaArgs) {
@@ -16,7 +17,7 @@ export default function Home() {
 					{/* 메인 콘텐츠 영역 (2열 차지) - Stories + Feed */}
 					<div className="lg:col-span-2 space-y-6">
 						{/* Stories 컴포넌트 자리 */}
-						<div></div>
+						<Stories />
 						{/* Feed 컴포넌트 자리 */}
 						<div></div>
 					</div>
