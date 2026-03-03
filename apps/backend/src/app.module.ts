@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard, AuthModule } from "@thallesp/nestjs-better-auth";
 import { betterAuth } from "better-auth";
@@ -24,8 +24,8 @@ import { DATABASE_CONNECTION } from "./database/database-connection";
 		 */
 		AuthModule.forRootAsync({
 			// useFactory에서 DATABASE_CONNECTION 프로바이더를 사용하기 위해 DatabaseModule 임포트
-			imports: [DatabaseModule],
-			useFactory: (database: NodePgDatabase) => ({
+			imports: [DatabaseModule, ConfigModule],
+			useFactory: (database: NodePgDatabase, configService: ConfigService) => ({
 				// betterAuth() 함수로 BetterAuth 인스턴스를 생성하여 auth 속성에 전달
 				auth: betterAuth({
 					// drizzleAdapter로 기존 Drizzle ORM 연결을 BetterAuth의 데이터 저장소로 활용
@@ -33,10 +33,17 @@ import { DATABASE_CONNECTION } from "./database/database-connection";
 					database: drizzleAdapter(database, {
 						provider: "pg", // 사용 중인 DB 종류 (PostgreSQL)
 					}),
+					// 이메일/비밀번호 인증 방식 활성화 (명시적으로 opt-in 필요)
+					emailAndPassword: {
+						enabled: true,
+					},
+					// BetterAuth는 기본적으로 모든 외부 origin 요청을 차단
+					// UI에서 오는 요청을 허용하기 위해 UI_URL을 신뢰 목록에 등록
+					trustedOrigins: [configService.getOrThrow("UI_URL")],
 				}),
 			}),
 			// useFactory에 주입할 의존성 토큰 목록
-			inject: [DATABASE_CONNECTION],
+			inject: [DATABASE_CONNECTION, ConfigService],
 		}),
 	],
 	controllers: [AppController],

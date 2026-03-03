@@ -8,5 +8,13 @@ export default defineConfig({
 	server: {
 		port: 3000,
 		open: true,
+		// /api/* 요청을 백엔드 서버로 프록시 (CORS 우회)
+		// vite.config.ts는 Node.js에서 실행되므로 VITE_ 접두사 없이 process.env 접근 가능
+		proxy: {
+			"/api": {
+				target: process.env.API_URL || "http://localhost:3001",
+				changeOrigin: true,
+			},
+		},
 	},
 });
