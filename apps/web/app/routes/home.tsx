@@ -1,3 +1,4 @@
+import Feed from "@/components/dashboard/feed";
 import Stories from "@/components/dashboard/stories";
 import type { Route } from "./+types/home";
 
@@ -16,10 +17,8 @@ export default function Home() {
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 					{/* 메인 콘텐츠 영역 (2열 차지) - Stories + Feed */}
 					<div className="lg:col-span-2 space-y-6">
-						{/* Stories 컴포넌트 자리 */}
 						<Stories />
-						{/* Feed 컴포넌트 자리 */}
-						<div></div>
+						<Feed />
 					</div>
 					{/* 사이드바 영역 - 대형화면에서 스크롤 시 고정 */}
 					<div className="lg:sticky lg:top-8 lg:h-fit">
