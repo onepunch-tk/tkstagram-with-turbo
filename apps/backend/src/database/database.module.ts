@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
+import * as authSchema from "../auth/schema";
 import { DATABASE_CONNECTION } from "./database-connection";
 
 @Module({
@@ -19,7 +20,12 @@ import { DATABASE_CONNECTION } from "./database-connection";
 				});
 
 				// Drizzle ORM 객체 반환 - 이후 서비스에서 DB 쿼리에 사용
-				return drizzle(pool);
+				// schema에 등록된 테이블은 타입 안전한 쿼리가 가능 (e.g. db.query.user.findMany())
+				return drizzle(pool, {
+					schema: {
+						...authSchema,
+					},
+				});
 			},
 			// NestJS에게 ConfigService를 useFactory에 주입하도록 지시
 			inject: [ConfigService],
