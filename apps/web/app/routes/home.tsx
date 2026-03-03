@@ -1,4 +1,5 @@
 import Feed from "@/components/dashboard/feed";
+import SideBar from "@/components/dashboard/sidebar";
 import Stories from "@/components/dashboard/stories";
 import type { Route } from "./+types/home";
 
@@ -22,7 +23,7 @@ export default function Home() {
 					</div>
 					{/* 사이드바 영역 - 대형화면에서 스크롤 시 고정 */}
 					<div className="lg:sticky lg:top-8 lg:h-fit">
-						<div></div>
+						<SideBar />
 					</div>
 				</div>
 			</div>
