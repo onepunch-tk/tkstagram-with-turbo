@@ -139,6 +139,32 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
 	);
 }
 
+/**
+ * 폼 전체에 대한 글로벌 에러 메시지를 표시하는 컴포넌트.
+ * 개별 필드 에러(FormMessage)와 달리, setError("root", ...) 로 설정된 에러를 렌더링한다.
+ * Form(FormProvider) 내부에서 사용해야 useFormContext를 통해 폼 상태에 접근 가능.
+ */
+function FormRootError({ className, ...props }: React.ComponentProps<"div">) {
+	const { formState } = useFormContext();
+
+	if (!formState.errors.root) {
+		return null;
+	}
+
+	return (
+		<div
+			data-slot="form-root-error"
+			className={cn(
+				"bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-md text-sm",
+				className,
+			)}
+			{...props}
+		>
+			{formState.errors.root.message}
+		</div>
+	);
+}
+
 export {
 	useFormField,
 	Form,
@@ -148,4 +174,5 @@ export {
 	FormDescription,
 	FormMessage,
 	FormField,
+	FormRootError,
 };

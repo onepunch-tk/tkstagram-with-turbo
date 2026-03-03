@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { type UseFormSetError, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -10,12 +10,14 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
+	FormRootError,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { type LoginFormData, loginSchema } from "../lib/schema";
 
 interface LoginFormProps {
-	onSubmit: (data: LoginFormData) => Promise<void>;
+	// setError를 함께 전달하여 부모 컴포넌트에서 root 레벨 폼 에러를 설정할 수 있게 함
+	onSubmit: (data: LoginFormData, setError: UseFormSetError<LoginFormData>) => Promise<void>;
 }
 
 export default function LoginForm({ onSubmit }: LoginFormProps) {
@@ -32,7 +34,8 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
 		setIsSubmitting(true);
 
 		try {
-			await onSubmit(data);
+			// form.setError를 전달하여 onSubmit에서 글로벌 폼 에러를 설정할 수 있게 함
+			await onSubmit(data, form.setError);
 		} catch (err) {
 			console.error("Login error:", err);
 		}
@@ -48,6 +51,8 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
 			<CardContent>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+						{/* 필드 에러가 아닌 글로벌 폼 에러 (예: 잘못된 인증 정보) 표시 */}
+						<FormRootError />
 						<FormField
 							control={form.control}
 							name="email"

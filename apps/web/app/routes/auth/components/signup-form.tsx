@@ -10,6 +10,7 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
+	FormRootError,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { type SignupFormData, signupSchema } from "../lib/schema";
@@ -44,6 +45,8 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
 			<CardContent>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+						{/* 글로벌 폼 에러 표시 영역 (root 에러가 있을 때만 렌더링) */}
+						<FormRootError />
 						<FormField
 							control={form.control}
 							name="name"

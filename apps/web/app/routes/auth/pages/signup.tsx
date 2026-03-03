@@ -1,15 +1,28 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import SignupForm from "../components/signup-form";
 import { authClient } from "../lib/auth-client";
 import type { SignupFormData } from "../lib/schema";
 
 export default function Signup() {
+	// useNavigate: React Router v7의 클라이언트 사이드 네비게이션 훅
+	const navigate = useNavigate();
+
 	const handleSignup = async (data: SignupFormData) => {
+		// 1. 회원가입 요청
 		await authClient.signUp.email({
 			name: data.name,
 			email: data.email,
 			password: data.password,
 		});
+
+		// 2. 가입 후 자동 로그인 (JWT 쿠키 설정)
+		await authClient.signIn.email({
+			email: data.email,
+			password: data.password,
+		});
+
+		// 3. 홈페이지로 리다이렉트
+		navigate("/");
 	};
 
 	return (
