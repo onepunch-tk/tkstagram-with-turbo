@@ -1,6 +1,10 @@
+import { Plus } from "lucide-react";
+import { useState } from "react";
 import Feed from "@/components/dashboard/feed";
+import PhotoUpload from "@/components/dashboard/photo-upload";
 import SideBar from "@/components/dashboard/sidebar";
 import Stories from "@/components/dashboard/stories";
+import Fab from "@/components/ui/fab";
 import type { Route } from "./+types/home";
 
 export function meta(_args: Route.MetaArgs) {
@@ -11,6 +15,12 @@ export function meta(_args: Route.MetaArgs) {
 }
 
 export default function Home() {
+	// 업로드 다이얼로그 표시 여부 — FAB 클릭 시 true, 다이얼로그 닫기 시 false
+	const [showUploadModal, setShowUploadModal] = useState(false);
+
+	// PhotoUpload의 onSubmit 핸들러 — 추후 파일 업로드 API + TRPC mutation(create post) 호출 구현 예정
+	const handleCreatePost = async (_file: File, _captionn: string) => {};
+
 	return (
 		<div className="min-h-screen bg-background">
 			<div className="max-w-6xl mx-auto px-4 py-8">
@@ -27,6 +37,17 @@ export default function Home() {
 					</div>
 				</div>
 			</div>
+
+			{/* 게시물 생성 다이얼로그 — ShadCN Dialog 기반, 파일 업로드 + 캡션 입력 */}
+			<PhotoUpload
+				open={showUploadModal}
+				onOpenChange={setShowUploadModal}
+				onSubmit={handleCreatePost}
+			/>
+			{/* FAB(Floating Action Button) — 클릭 시 업로드 다이얼로그 표시 */}
+			<Fab onClick={() => setShowUploadModal(true)}>
+				<Plus className="h-6 w-6" />
+			</Fab>
 		</div>
 	);
 }
