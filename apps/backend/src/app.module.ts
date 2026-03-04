@@ -7,6 +7,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { TRPCModule } from "nestjs-trpc";
 import { AppController } from "./app.controller";
+import { UsersModule } from "./auth/users/users.module";
 import { DatabaseModule } from "./database/database.module";
 import { DATABASE_CONNECTION } from "./database/database-connection";
 import { PostsModule } from "./posts/posts.module";
@@ -56,6 +57,7 @@ import { PostsModule } from "./posts/posts.module";
 			inject: [DATABASE_CONNECTION, ConfigService],
 		}),
 		PostsModule,
+		UsersModule,
 	],
 	controllers: [AppController],
 	providers: [

@@ -1,7 +1,7 @@
 import { Input, Mutation, Query, Router } from "nestjs-trpc";
 import { z } from "zod";
 import { PostsService } from "./posts.service";
-import { type CreatePostInput, createPostSchema, postSchema } from "./trpc.schema";
+import { type CreatePostInput, createPostSchema, postSchema } from "./schemas/trpc.schema";
 
 /**
  * Posts TRPC 라우터
@@ -19,7 +19,8 @@ export class PostsRouter {
 		output: postSchema,
 	})
 	async create(@Input() createPostDto: CreatePostInput) {
-		return this.postsService.create(createPostDto);
+		// "123"은 임시 하드코딩된 userId — 추후 인증 구현 시 JWT에서 추출한 실제 userId로 대체
+		return this.postsService.create(createPostDto, "123");
 	}
 
 	/** Query: 전체 게시물 목록 조회 (output → postSchema 배열) */
