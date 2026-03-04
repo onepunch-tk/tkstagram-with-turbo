@@ -16,7 +16,10 @@
 		"test:cov": "jest --coverage",
 		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
 		"test:e2e": "jest --config ./test/jest-e2e.json",
-		"check-types": "tsc --noEmit"
+		"check-types": "tsc --noEmit",
+		"postinstall": "chmod +x ./node_modules/.bin/nestjs-trpc 2>/dev/null || true",
+		"trpc:generate": "nestjs-trpc generate --output ../../packages/trpc/src/server/server.ts",
+		"trpc:watch": "nestjs-trpc watch --output ../../packages/trpc/src/server/server.ts"
 	},
 	"dependencies": {
 		"@nestjs/common": "^11.0.1",
@@ -26,6 +29,7 @@
 		"@thallesp/nestjs-better-auth": "^2.4.0",
 		"better-auth": "^1.5.1",
 		"drizzle-orm": "^0.45.1",
+		"nestjs-trpc": "^2.9.1",
 		"pg": "^8.19.0",
 		"reflect-metadata": "^0.2.2",
 		"rxjs": "^7.8.1"

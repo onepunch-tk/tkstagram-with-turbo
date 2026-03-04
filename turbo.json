@@ -13,6 +13,10 @@
 		"dev": {
 			"cache": false,
 			"persistent": true
+		},
+		"trpc:watch": {
+			"cache": false,
+			"persistent": true
 		}
 	}
 }

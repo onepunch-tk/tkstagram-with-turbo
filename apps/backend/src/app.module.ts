@@ -5,10 +5,11 @@ import { AuthGuard, AuthModule } from "@thallesp/nestjs-better-auth";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { TRPCModule } from "nestjs-trpc";
 import { AppController } from "./app.controller";
 import { DatabaseModule } from "./database/database.module";
 import { DATABASE_CONNECTION } from "./database/database-connection";
-import { PostsModule } from './posts/posts.module';
+import { PostsModule } from "./posts/posts.module";
 
 @Module({
 	imports: [
@@ -16,6 +17,14 @@ import { PostsModule } from './posts/posts.module';
 		ConfigModule.forRoot(),
 		// Drizzle ORM 데이터베이스 연결을 관리하는 모듈
 		DatabaseModule,
+		/**
+		 * TRPC 모듈 초기화
+		 * - NestJS에 TRPC 서버를 통합하여 Express HTTP 위에서 동작
+		 * - nestjs-trpc CLI(trpc:watch)가 *.router.ts 파일을 감시하여
+		 *   packages/trpc/src/server/server.ts에 AppRouter 타입을 자동 생성
+		 * - 이 AppRouter를 백엔드와 프론트엔드가 공유하여 end-to-end 타입 안전성 확보
+		 */
+		TRPCModule.forRoot({}),
 		/**
 		 * BetterAuth 인증 모듈 설정
 		 * - forRootAsync를 사용하여 NestJS 의존성 주입(DI)으로 동적 설정 가능
