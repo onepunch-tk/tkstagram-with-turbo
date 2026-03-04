@@ -5,6 +5,7 @@
 	"license": "MIT",
 	"exports": {
 		"./base": "./base.json",
-		"./react-router": "./react-router.json"
+		"./react-router": "./react-router.json",
+		"./nestjs": "./nestjs.json"
 	}
 }

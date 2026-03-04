@@ -7,6 +7,6 @@ export default defineConfig({
 	out: "./drizzle", // 생성된 SQL 마이그레이션 파일 출력 경로
 	dialect: "postgresql",
 	dbCredentials: {
-		url: process.env.DATABASE_URL!,
+		url: process.env.DATABASE_URL ?? "",
 	},
 });
