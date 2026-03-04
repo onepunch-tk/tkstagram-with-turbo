@@ -35,6 +35,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Auto-generated
+packages/trpc/src/server/server.ts
+
 # Misc
 .DS_Store
 *.pem
