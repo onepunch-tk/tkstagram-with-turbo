@@ -8,6 +8,7 @@ import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { AppController } from "./app.controller";
 import { DatabaseModule } from "./database/database.module";
 import { DATABASE_CONNECTION } from "./database/database-connection";
+import { PostsModule } from './posts/posts.module';
 
 @Module({
 	imports: [
@@ -45,6 +46,7 @@ import { DATABASE_CONNECTION } from "./database/database-connection";
 			// useFactory에 주입할 의존성 토큰 목록
 			inject: [DATABASE_CONNECTION, ConfigService],
 		}),
+		PostsModule,
 	],
 	controllers: [AppController],
 	providers: [

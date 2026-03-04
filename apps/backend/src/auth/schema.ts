@@ -3,6 +3,7 @@
 // 이 스키마를 기반으로 DrizzleKit이 SQL 마이그레이션 스크립트를 생성
 import { relations } from "drizzle-orm";
 import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { post } from "../posts/schemas/schema";
 
 export const user = pgTable("user", {
 	id: text("id").primaryKey(),
@@ -76,9 +77,13 @@ export const verification = pgTable(
 	(table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+// User 테이블의 관계 정의 (User 측)
+// many(): 하나의 사용자는 여러 세션, 계정, 게시글을 가질 수 있음 (1:N)
+// post 측에서 이미 외래 키(fields/references)를 지정했으므로 여기서는 many()만 선언하면 충분
 export const userRelations = relations(user, ({ many }) => ({
 	sessions: many(session),
 	accounts: many(account),
+	posts: many(post),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
