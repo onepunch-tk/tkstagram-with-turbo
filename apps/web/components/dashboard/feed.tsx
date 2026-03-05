@@ -1,4 +1,4 @@
-import { Heart, MessageCircle } from "lucide-react";
+import { Heart, MessageCircle, User } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 
@@ -22,31 +22,45 @@ interface FeedProps {
 }
 
 export default function Feed({ posts }: FeedProps) {
+	/** 백엔드 정적 파일 서버에서 게시물 이미지를 불러오기 위한 전체 URL 생성 */
+	const getImageUrl = (imagePath: string) => {
+		return `${import.meta.env.VITE_API_URL}/uploads/images/${imagePath}`;
+	};
+
+	/** 아바타 경로가 없으면 null 반환 → 기본 아이콘 폴백 처리에 활용 */
+	const getAvatarUrl = (avatarPath: string) => {
+		if (!avatarPath) {
+			return null;
+		}
+
+		return `${import.meta.env.VITE_API_URL}/uploads/images/${avatarPath}`;
+	};
+
 	return (
 		<div className="space-y-6">
 			{posts.map((post) => (
 				<Card key={post.id} className="overflow-hidden">
 					<div className="flex items-center justify-between p-4">
 						<div className="flex items-center space-x-3">
-							<img
-								src={post.user.avatar}
-								alt={post.user.username}
-								width={64}
-								height={64}
-								className="w-8 h-8 rounded-full"
-							/>
+							{getAvatarUrl(post.user.avatar) ? (
+								<img
+									src={post.user.avatar}
+									alt={post.user.username}
+									width={64}
+									height={64}
+									className="w-8 h-8 rounded-full"
+								/>
+							) : (
+								<div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+									<User className="h-4 w-4 text-muted-foreground" />
+								</div>
+							)}
 							<span className="font-semibold text-sm">{post.user.username}</span>
 						</div>
 					</div>
 
 					<div className="aspect-square relative">
-						<img
-							src={post.image}
-							alt="Post"
-							className="w-full h-full object-cover"
-							width={600}
-							height={600}
-						/>
+						<img src={getImageUrl(post.image)} alt="Post" className="absolute w-full h-full object-cover" />
 					</div>
 
 					<div className="p-4 space-y-3">

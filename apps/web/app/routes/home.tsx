@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import Feed from "@/components/dashboard/feed";
@@ -20,9 +20,19 @@ export default function Home() {
 	// 업로드 다이얼로그 표시 여부 — FAB 클릭 시 true, 다이얼로그 닫기 시 false
 	const [showUploadModal, setShowUploadModal] = useState(false);
 	const trpc = useTRPC();
+	const queryClient = useQueryClient();
 
 	// tRPC + TanStack Query 통합: mutationOptions/queryOptions로 타입 안전한 서버 호출
-	const createPost = useMutation(trpc.postsRouter.create.mutationOptions());
+	// onSuccess: 게시물 생성 성공 시 findAll 쿼리 캐시를 무효화하여 피드를 자동 갱신
+	const createPost = useMutation(
+		trpc.postsRouter.create.mutationOptions({
+			onSuccess: () => {
+				queryClient.invalidateQueries({
+					queryKey: trpc.postsRouter.findAll.queryKey(),
+				});
+			},
+		}),
+	);
 	const posts = useQuery(trpc.postsRouter.findAll.queryOptions());
 
 	/**
