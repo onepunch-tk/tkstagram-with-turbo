@@ -18,8 +18,22 @@ export default function Home() {
 	// 업로드 다이얼로그 표시 여부 — FAB 클릭 시 true, 다이얼로그 닫기 시 false
 	const [showUploadModal, setShowUploadModal] = useState(false);
 
-	// PhotoUpload의 onSubmit 핸들러 — 추후 파일 업로드 API + TRPC mutation(create post) 호출 구현 예정
-	const handleCreatePost = async (_file: File, _captionn: string) => {};
+	const handleCreatePost = async (file: File, _captionn: string) => {
+		const formData = new FormData();
+		formData.append("image", file);
+
+		const uploadResponse = await fetch("/api/upload/image", {
+			method: "POST",
+			body: formData,
+		});
+
+		if (!uploadResponse.ok) {
+			throw new Error("Failed to upload image");
+		}
+
+		const { filename } = await uploadResponse.json();
+		console.log(filename);
+	};
 
 	return (
 		<div className="min-h-screen bg-background">
