@@ -1,4 +1,5 @@
 import { Heart, MessageCircle, User } from "lucide-react";
+import { getImageUrl } from "@/lib/image.client";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 
@@ -22,27 +23,13 @@ interface FeedProps {
 }
 
 export default function Feed({ posts }: FeedProps) {
-	/** 백엔드 정적 파일 서버에서 게시물 이미지를 불러오기 위한 전체 URL 생성 */
-	const getImageUrl = (imagePath: string) => {
-		return `${import.meta.env.VITE_API_URL}/uploads/images/${imagePath}`;
-	};
-
-	/** 아바타 경로가 없으면 null 반환 → 기본 아이콘 폴백 처리에 활용 */
-	const getAvatarUrl = (avatarPath: string) => {
-		if (!avatarPath) {
-			return null;
-		}
-
-		return `${import.meta.env.VITE_API_URL}/uploads/images/${avatarPath}`;
-	};
-
 	return (
 		<div className="space-y-6">
 			{posts.map((post) => (
 				<Card key={post.id} className="overflow-hidden">
 					<div className="flex items-center justify-between p-4">
 						<div className="flex items-center space-x-3">
-							{getAvatarUrl(post.user.avatar) ? (
+							{getImageUrl(post.user.avatar) ? (
 								<img
 									src={post.user.avatar}
 									alt={post.user.username}
@@ -60,7 +47,11 @@ export default function Feed({ posts }: FeedProps) {
 					</div>
 
 					<div className="aspect-square relative">
-						<img src={getImageUrl(post.image)} alt="Post" className="absolute w-full h-full object-cover" />
+						<img
+							src={getImageUrl(post.image)}
+							alt="Post"
+							className="absolute w-full h-full object-cover"
+						/>
 					</div>
 
 					<div className="p-4 space-y-3">

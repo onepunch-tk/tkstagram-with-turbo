@@ -1,9 +1,11 @@
-import { LogOut } from "lucide-react";
+import { Camera, LogOut, User } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { authClient } from "@/app/routes/auth/lib/auth-client";
 import ThemeToggle from "../theme/theme-toggle";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
+import AvatarUpload from "./avatar-upload";
 
 interface SuggestedUser {
 	id: string;
@@ -53,6 +55,7 @@ const mockSuggestions: SuggestedUser[] = [
 // 사이드바: 유저 프로필, 테마 토글, 로그아웃
 export default function SideBar() {
 	const { data: session } = authClient.useSession();
+	const [showAvatarModal, setShowAvatarModal] = useState(false);
 	const navigate = useNavigate();
 
 	// JWT 세션 쿠키 제거 후 로그인 페이지로 리다이렉트
@@ -61,17 +64,37 @@ export default function SideBar() {
 		navigate("/login");
 	};
 
+	const handleAvatarUpload = async (_file: File) => {};
+
 	return (
 		<div className="space-y-6">
 			<Card className="p-4">
 				<div className="flex items-center space-x-3 mb-4">
-					<img
-						src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=60&h=60&fit=crop&crop=face"
-						alt="Your profile"
-						width={60}
-						height={60}
-						className="w-14 h-14 rounded-full"
-					/>
+					<div className="relative">
+						{session?.user.image ? (
+							<img
+								src={session.user.image}
+								alt="Your profile"
+								width={60}
+								height={60}
+								className="w-14 h-14 rounded-full"
+							/>
+						) : (
+							<div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+								<User className="h-4 w-4 text-muted-foreground" />
+							</div>
+						)}
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={() => setShowAvatarModal(true)}
+							title="Change avatar"
+							className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary text-primary-foreground rounded-full p-1 hover:bg-primary/90"
+						>
+							<Camera className="w-3 h-3" />
+						</Button>
+					</div>
+
 					<div className="flex-1 min-w-0">
 						<div className="font-semibold truncate">{session?.user.email}</div>
 						<div className="text-sm text-muted-foreground truncate">{session?.user.name}</div>
@@ -122,6 +145,13 @@ export default function SideBar() {
 					))}
 				</div>
 			</Card>
+
+			<AvatarUpload
+				open={showAvatarModal}
+				onOpenChange={setShowAvatarModal}
+				onSubmit={handleAvatarUpload}
+				currentAvatar={session?.user.image}
+			/>
 		</div>
 	);
 }
