@@ -9,6 +9,7 @@ import {
 import type { Route } from "./+types/root";
 import "./globals.css";
 import ThemeProvider from "@/components/theme/theme-provider";
+import TRPCProvider from "@/components/trpc/trpc-provider";
 
 export const links: Route.LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -40,7 +41,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 					enableSystem
 					disableTransitionOnChange
 				>
-					{children}
+					<TRPCProvider>{children}</TRPCProvider>
 					<ScrollRestoration />
 					<Scripts />
 				</ThemeProvider>

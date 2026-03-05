@@ -11,7 +11,7 @@ import { UsersModule } from "./auth/users/users.module";
 import { DatabaseModule } from "./database/database.module";
 import { DATABASE_CONNECTION } from "./database/database-connection";
 import { PostsModule } from "./posts/posts.module";
-import { UploadModule } from './upload/upload.module';
+import { UploadModule } from "./upload/upload.module";
 
 @Module({
 	imports: [
@@ -26,7 +26,9 @@ import { UploadModule } from './upload/upload.module';
 		 *   packages/trpc/src/server/server.ts에 AppRouter 타입을 자동 생성
 		 * - 이 AppRouter를 백엔드와 프론트엔드가 공유하여 end-to-end 타입 안전성 확보
 		 */
-		TRPCModule.forRoot({}),
+		TRPCModule.forRoot({
+			basePath: "/api/trpc",
+		}),
 		/**
 		 * BetterAuth 인증 모듈 설정
 		 * - forRootAsync를 사용하여 NestJS 의존성 주입(DI)으로 동적 설정 가능
