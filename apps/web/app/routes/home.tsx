@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import Feed from "@/components/dashboard/feed";
@@ -5,6 +6,7 @@ import PhotoUpload from "@/components/dashboard/photo-upload";
 import SideBar from "@/components/dashboard/sidebar";
 import Stories from "@/components/dashboard/stories";
 import Fab from "@/components/ui/fab";
+import { useTRPC } from "@/lib/trpc/client";
 import type { Route } from "./+types/home";
 
 export function meta(_args: Route.MetaArgs) {
@@ -17,8 +19,18 @@ export function meta(_args: Route.MetaArgs) {
 export default function Home() {
 	// 업로드 다이얼로그 표시 여부 — FAB 클릭 시 true, 다이얼로그 닫기 시 false
 	const [showUploadModal, setShowUploadModal] = useState(false);
+	const trpc = useTRPC();
 
-	const handleCreatePost = async (file: File, _captionn: string) => {
+	// tRPC + TanStack Query 통합: mutationOptions/queryOptions로 타입 안전한 서버 호출
+	const createPost = useMutation(trpc.postsRouter.create.mutationOptions());
+	const posts = useQuery(trpc.postsRouter.findAll.queryOptions());
+
+	/**
+	 * 게시물 생성 핸들러 — 2단계로 처리:
+	 * 1) 이미지 파일을 REST 엔드포인트(/api/upload/image)로 업로드하여 파일명 획득
+	 * 2) 획득한 파일명과 캡션을 tRPC mutation으로 전송하여 DB에 게시물 저장
+	 */
+	const handleCreatePost = async (file: File, caption: string) => {
 		const formData = new FormData();
 		formData.append("image", file);
 
@@ -32,7 +44,11 @@ export default function Home() {
 		}
 
 		const { filename } = await uploadResponse.json();
-		console.log(filename);
+
+		await createPost.mutateAsync({
+			image: filename,
+			caption,
+		});
 	};
 
 	return (
@@ -43,7 +59,8 @@ export default function Home() {
 					{/* 메인 콘텐츠 영역 (2열 차지) - Stories + Feed */}
 					<div className="lg:col-span-2 space-y-6">
 						<Stories />
-						<Feed />
+						{/* posts.data가 아직 없으면(로딩 중) 빈 배열을 전달하여 빈 피드 렌더링 */}
+						<Feed posts={posts.data || []} />
 					</div>
 					{/* 사이드바 영역 - 대형화면에서 스크롤 시 고정 */}
 					<div className="lg:sticky lg:top-8 lg:h-fit">

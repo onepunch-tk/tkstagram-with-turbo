@@ -20,7 +20,7 @@ export class PostsRouter {
 	})
 	async create(@Input() createPostDto: CreatePostInput) {
 		// "123"은 임시 하드코딩된 userId — 추후 인증 구현 시 JWT에서 추출한 실제 userId로 대체
-		return this.postsService.create(createPostDto, "123");
+		return this.postsService.create(createPostDto, "HfrzkAmNHNDMzbk406HFldkOvxlEpMQQ");
 	}
 
 	/** Query: 전체 게시물 목록 조회 (output → postSchema 배열) */

@@ -2,8 +2,9 @@ import { Heart, MessageCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 
+/** tRPC postSchema와 동일한 구조 — 서버에서 반환하는 게시물 응답 타입 */
 interface Post {
-	id: string;
+	id: number;
 	user: {
 		username: string;
 		avatar: string;
@@ -15,52 +16,15 @@ interface Post {
 	timestamp: string;
 }
 
-const mockPosts: Post[] = [
-	{
-		id: "1",
-		user: {
-			username: "johndoe",
-			avatar:
-				"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face",
-		},
-		image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=600&fit=crop",
-		caption: "Beautiful sunset at the beach",
-		likes: 142,
-		comments: 8,
-		timestamp: "2 hours ago",
-	},
-	{
-		id: "2",
-		user: {
-			username: "janedoe",
-			avatar:
-				"https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=60&h=60&fit=crop&crop=face",
-		},
-		image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=600&fit=crop",
-		caption: "Coffee and code #dev #coffee",
-		likes: 89,
-		comments: 12,
-		timestamp: "4 hours ago",
-	},
-	{
-		id: "3",
-		user: {
-			username: "photographer",
-			avatar:
-				"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face",
-		},
-		image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=600&fit=crop",
-		caption: "Nature at its finest #photography #nature",
-		likes: 234,
-		comments: 15,
-		timestamp: "6 hours ago",
-	},
-];
+/** Feed 컴포넌트 props — 부모(Home)에서 tRPC 쿼리로 조회한 게시물 배열을 전달받음 */
+interface FeedProps {
+	posts: Post[];
+}
 
-export default function Feed() {
+export default function Feed({ posts }: FeedProps) {
 	return (
 		<div className="space-y-6">
-			{mockPosts.map((post) => (
+			{posts.map((post) => (
 				<Card key={post.id} className="overflow-hidden">
 					<div className="flex items-center justify-between p-4">
 						<div className="flex items-center space-x-3">

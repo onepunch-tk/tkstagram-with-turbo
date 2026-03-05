@@ -5,6 +5,7 @@ import { z } from "zod";
  * - 이미지는 별도의 HTTP 파일 업로드 컨트롤러에서 처리하므로 여기에 포함하지 않음
  */
 export const createPostSchema = z.object({
+	image: z.string().min(1, "Image is required"),
 	caption: z.string().min(1, "Caption is required"),
 });
 
