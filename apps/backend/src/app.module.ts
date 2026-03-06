@@ -6,7 +6,9 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { TRPCModule } from "nestjs-trpc";
+import { AppContext } from "./app.context";
 import { AppController } from "./app.controller";
+import { AuthTRPCMiddleware } from "./auth/auth-trpc.middleware";
 import { UsersModule } from "./auth/users/users.module";
 import { DatabaseModule } from "./database/database.module";
 import { DATABASE_CONNECTION } from "./database/database-connection";
@@ -28,6 +30,7 @@ import { UploadModule } from "./upload/upload.module";
 		 */
 		TRPCModule.forRoot({
 			basePath: "/api/trpc",
+			context: AppContext,
 		}),
 		/**
 		 * BetterAuth 인증 모듈 설정
@@ -66,6 +69,10 @@ import { UploadModule } from "./upload/upload.module";
 	],
 	controllers: [AppController],
 	providers: [
+		// TRPC 라우터에서 @UseMiddlewares()로 사용할 인증 미들웨어
+		AuthTRPCMiddleware,
+		// TRPC 프로시저의 공유 컨텍스트(req/res)를 생성하는 프로바이더
+		AppContext,
 		/**
 		 * 전역 인증 가드 (Global Auth Guard)
 		 * - APP_GUARD로 등록하면 모든 라우트에 자동으로 AuthGuard가 적용됨

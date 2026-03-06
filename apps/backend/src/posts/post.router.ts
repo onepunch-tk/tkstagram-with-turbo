@@ -1,5 +1,7 @@
-import { Input, Mutation, Query, Router } from "nestjs-trpc";
+import { Ctx, Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 import { z } from "zod";
+import type { AppContext } from "../app-context-.interface";
+import { AuthTRPCMiddleware } from "../auth/auth-trpc.middleware";
 import { PostsService } from "./posts.service";
 import { type CreatePostInput, createPostSchema, postSchema } from "./schemas/trpc.schema";
 
@@ -10,6 +12,7 @@ import { type CreatePostInput, createPostSchema, postSchema } from "./schemas/tr
  * - NestJS DI를 통해 PostsService를 주입받아 실제 비즈니스 로직 위임
  */
 @Router()
+@UseMiddlewares(AuthTRPCMiddleware)
 export class PostsRouter {
 	constructor(private readonly postsService: PostsService) {}
 
@@ -18,9 +21,8 @@ export class PostsRouter {
 		input: createPostSchema,
 		output: postSchema,
 	})
-	async create(@Input() createPostDto: CreatePostInput) {
-		// "123"은 임시 하드코딩된 userId — 추후 인증 구현 시 JWT에서 추출한 실제 userId로 대체
-		return this.postsService.create(createPostDto, "HfrzkAmNHNDMzbk406HFldkOvxlEpMQQ");
+	async create(@Input() createPostDto: CreatePostInput, @Ctx() context: AppContext) {
+		return this.postsService.create(createPostDto, context.user.id);
 	}
 
 	/** Query: 전체 게시물 목록 조회 (output → postSchema 배열) */
