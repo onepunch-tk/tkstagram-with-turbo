@@ -1,7 +1,10 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { Camera, LogOut, User } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { authClient } from "@/app/routes/auth/lib/auth-client";
+import { getImageUrl } from "@/lib/image.client";
+import { useTRPC } from "@/lib/trpc/client";
 import ThemeToggle from "../theme/theme-toggle";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
@@ -57,6 +60,8 @@ export default function SideBar() {
 	const { data: session } = authClient.useSession();
 	const [showAvatarModal, setShowAvatarModal] = useState(false);
 	const navigate = useNavigate();
+	const trpc = useTRPC();
+	const queryClient = useQueryClient();
 
 	// JWT 세션 쿠키 제거 후 로그인 페이지로 리다이렉트
 	const handleLogout = async () => {
@@ -64,7 +69,23 @@ export default function SideBar() {
 		navigate("/login");
 	};
 
-	const handleAvatarUpload = async (_file: File) => {};
+	const handleAvatarUpload = async (file: File) => {
+		const formData = new FormData();
+		formData.append("image", file);
+
+		const uploadResponse = await fetch("/api/upload/image", {
+			method: "POST",
+			body: formData,
+		});
+
+		if (!uploadResponse.ok) {
+			throw new Error("Failed to upload avatar");
+		}
+
+		const { filename } = await uploadResponse.json();
+		await authClient.updateUser({ image: filename });
+		await queryClient.invalidateQueries(trpc.postsRouter.findAll.queryOptions());
+	};
 
 	return (
 		<div className="space-y-6">
@@ -73,7 +94,7 @@ export default function SideBar() {
 					<div className="relative">
 						{session?.user.image ? (
 							<img
-								src={session.user.image}
+								src={getImageUrl(session.user.image)}
 								alt="Your profile"
 								width={60}
 								height={60}

@@ -29,9 +29,9 @@ export default function Feed({ posts }: FeedProps) {
 				<Card key={post.id} className="overflow-hidden">
 					<div className="flex items-center justify-between p-4">
 						<div className="flex items-center space-x-3">
-							{getImageUrl(post.user.avatar) ? (
+							{post.user.avatar ? (
 								<img
-									src={post.user.avatar}
+									src={getImageUrl(post.user.avatar)}
 									alt={post.user.username}
 									width={64}
 									height={64}

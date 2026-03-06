@@ -57,7 +57,7 @@ export class PostsService {
 			id: savedPost.id,
 			user: {
 				username: savedPost.user.name,
-				avatar: "", // 추후 파일 업로드 구현 시 실제 아바타 경로로 대체
+				avatar: savedPost.user.image || "",
 			},
 			image: savedPost.image,
 			caption: savedPost.caption,
