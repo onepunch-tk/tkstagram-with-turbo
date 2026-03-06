@@ -15,6 +15,13 @@
       "when": 1772600225033,
       "tag": "0001_big_justin_hammer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772781734281,
+      "tag": "0002_clumsy_thunderbolts",
+      "breakpoints": true
     }
   ]
 }
