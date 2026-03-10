@@ -23,11 +23,16 @@
 		// 컴파일 결과물 출력 디렉토리
 		"outDir": "./dist",
 		/**
-		 * nestjs-trpc가 자동 생성하는 server.ts에서 `@repo/trpc/schemas` 형태로
+		 * nestjs-trpc(v2.9.1+)가 자동 생성하는 server.ts에서 `@repo/trpc/schemas` 형태로
 		 * 자기 자신 패키지를 import하는 셀프 참조 문제가 발생함.
 		 * tsc는 컴파일 중인 패키지의 package.json exports를 resolve할 수 없으므로,
 		 * path alias로 `@repo/trpc/*` → `./src/*`로 리다이렉트하여
-		 * 외부 패키지 참조가 아닌 로컬 소스 파일 참조로 변환
+		 * 외부 패키지 참조가 아닌 로컬 소스 파일 참조로 변환.
+		 *
+		 * NOTE: paths alias는 컴파일 패키지에서만 사용 가능.
+		 * JIT(just-in-time) 패키지는 자체 tsconfig가 아닌 소비 앱(NestJS 등)의
+		 * tsc가 코드를 컴파일하므로, 이 패키지의 tsconfig paths가 적용되지 않음.
+		 * 컴파일 패키지는 자체 tsc로 빌드하기 때문에 자신의 tsconfig paths가 반영됨.
 		 */
 		"paths": {
 			"@repo/trpc/*": ["./src/*"]
