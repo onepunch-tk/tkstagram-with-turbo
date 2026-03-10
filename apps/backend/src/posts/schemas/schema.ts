@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import { integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 import { user } from "../../auth/schema";
+import { comment } from "../../comments/schemas/schema";
 
 // Post 테이블 스키마 정의
 // drizzle.config.ts의 schema 경로 패턴(*.schema.ts)에 맞춰 파일명을 schema.ts로 지정하여
@@ -30,6 +31,8 @@ export const postRelations = relations(post, ({ one, many }) => ({
 	}),
 
 	likes: many(like),
+	// Post ↔ Comment 관계: 하나의 게시글은 여러 댓글을 가질 수 있음 (1:N)
+	comments: many(comment),
 }));
 
 /**

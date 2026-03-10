@@ -14,6 +14,7 @@ import { DatabaseModule } from "./database/database.module";
 import { DATABASE_CONNECTION } from "./database/database-connection";
 import { PostsModule } from "./posts/posts.module";
 import { UploadModule } from "./upload/upload.module";
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
 	imports: [
@@ -66,6 +67,8 @@ import { UploadModule } from "./upload/upload.module";
 		UsersModule,
 		// Multer 기반 범용 파일 업로드 모듈 (이미지 업로드 및 로컬 디스크 저장)
 		UploadModule,
+		// 댓글 기능 모듈 (댓글 CRUD 비즈니스 로직 및 tRPC 라우터)
+		CommentsModule,
 	],
 	controllers: [AppController],
 	providers: [
