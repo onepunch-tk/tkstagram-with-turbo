@@ -1,22 +1,8 @@
+import type { Post } from "@repo/trpc/schemas";
 import { Heart, MessageCircle, User } from "lucide-react";
 import { getImageUrl } from "@/lib/image.client";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-
-/** tRPC postSchema와 동일한 구조 — 서버에서 반환하는 게시물 응답 타입 */
-interface Post {
-	id: number;
-	user: {
-		username: string;
-		avatar: string;
-	};
-	image: string;
-	caption: string;
-	likes: number;
-	comments: number;
-	timestamp: string;
-	isLiked?: boolean;
-}
 
 /**
  * Feed 컴포넌트 props — 부모(Home)에서 tRPC 쿼리로 조회한 게시물 배열을 전달받음
@@ -63,7 +49,7 @@ export default function Feed({ posts, onLikePost }: FeedProps) {
 						<div className="flex items-center justify-between">
 							<div className="flex items-center space-x-4">
 								{/* 좋아요 버튼 — isLiked 상태에 따라 채워진/빈 하트 렌더링 */}
-							<Button
+								<Button
 									variant="ghost"
 									size="sm"
 									onClick={() => onLikePost(post.id)}

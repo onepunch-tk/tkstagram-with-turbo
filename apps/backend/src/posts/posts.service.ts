@@ -1,11 +1,11 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { CreatePostInput, Post } from "@repo/trpc/schemas";
 import { and, desc, eq } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { UsersService } from "../auth/users/users.service";
 import { schema } from "../database/database.module";
 import { DATABASE_CONNECTION } from "../database/database-connection";
 import { like, post } from "./schemas/schema";
-import { CreatePostInput, Post } from "./schemas/trpc.schema";
 
 @Injectable()
 export class PostsService {

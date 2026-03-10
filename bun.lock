@@ -19,6 +19,7 @@
         "@nestjs/config": "^4.0.3",
         "@nestjs/core": "^11.0.1",
         "@nestjs/platform-express": "^11.0.1",
+        "@repo/trpc": "*",
         "@thallesp/nestjs-better-auth": "^2.4.0",
         "better-auth": "^1.5.1",
         "drizzle-orm": "^0.45.1",

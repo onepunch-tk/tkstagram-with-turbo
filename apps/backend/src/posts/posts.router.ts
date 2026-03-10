@@ -1,15 +1,15 @@
-import { Ctx, Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
-import { z } from "zod";
-import type { AppContext } from "../app-context-.interface";
-import { AuthTRPCMiddleware } from "../auth/auth-trpc.middleware";
-import { PostsService } from "./posts.service";
 import {
 	type CreatePostInput,
 	createPostSchema,
 	type LikePostInput,
 	likePostSchema,
 	postSchema,
-} from "./schemas/trpc.schema";
+} from "@repo/trpc/schemas";
+import { Ctx, Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
+import { z } from "zod";
+import type { AppContext } from "../app-context-.interface";
+import { AuthTRPCMiddleware } from "../auth/auth-trpc.middleware";
+import { PostsService } from "./posts.service";
 
 /**
  * Posts TRPC 라우터
