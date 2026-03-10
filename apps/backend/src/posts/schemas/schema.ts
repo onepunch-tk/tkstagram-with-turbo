@@ -11,7 +11,6 @@ export const post = pgTable("post", {
 	// 업로드된 이미지 파일명 (추후 파일 업로드 구현 시 실제 저장 경로와 매핑)
 	image: text("image").notNull(),
 	caption: text("caption").notNull(),
-	likes: integer("likes").notNull(),
 	createdAt: timestamp("createdAt").notNull(),
 	// user 테이블의 id를 참조하는 외래 키 (1:1 관계 — 하나의 게시글은 하나의 사용자에 귀속)
 	userId: text("user_id")

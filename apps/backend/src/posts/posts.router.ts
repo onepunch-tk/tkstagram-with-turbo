@@ -3,7 +3,13 @@ import { z } from "zod";
 import type { AppContext } from "../app-context-.interface";
 import { AuthTRPCMiddleware } from "../auth/auth-trpc.middleware";
 import { PostsService } from "./posts.service";
-import { type CreatePostInput, createPostSchema, postSchema } from "./schemas/trpc.schema";
+import {
+	type CreatePostInput,
+	createPostSchema,
+	type LikePostInput,
+	likePostSchema,
+	postSchema,
+} from "./schemas/trpc.schema";
 
 /**
  * Posts TRPC 라우터
@@ -19,7 +25,6 @@ export class PostsRouter {
 	/** Mutation: 새 게시물 생성 (input → createPostSchema, output → postSchema) */
 	@Mutation({
 		input: createPostSchema,
-		output: postSchema,
 	})
 	async create(@Input() createPostDto: CreatePostInput, @Ctx() context: AppContext) {
 		return this.postsService.create(createPostDto, context.user.id);
@@ -27,7 +32,17 @@ export class PostsRouter {
 
 	/** Query: 전체 게시물 목록 조회 (output → postSchema 배열) */
 	@Query({ output: z.array(postSchema) })
-	async findAll() {
-		return this.postsService.findAll();
+	async findAll(@Ctx() context: AppContext) {
+		return this.postsService.findAll(context.user.id);
+	}
+
+	/**
+	 * Mutation: 게시물 좋아요 토글
+	 * - 이미 좋아요한 게시물이면 좋아요 삭제(unlike), 아니면 새 좋아요 생성(like)
+	 * - context에서 현재 사용자 ID를 추출하여 좋아요 소유자를 식별
+	 */
+	@Mutation({ input: likePostSchema })
+	async likePost(@Input() liekPostInput: LikePostInput, @Ctx() context: AppContext) {
+		return this.postsService.likePost(liekPostInput.postId, context.user.id);
 	}
 }
