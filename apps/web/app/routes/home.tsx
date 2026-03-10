@@ -34,6 +34,30 @@ export default function Home() {
 		}),
 	);
 	const posts = useQuery(trpc.postsRouter.findAll.queryOptions());
+	// 좋아요 토글 mutation — onMutate에서 클라이언트 캐시를 직접 갱신하여 즉각적인 UI 반영
+	// 서버 재요청(invalidate) 대신 setQueryData로 메모리 내 캐시만 수정하므로 네트워크 비용 없음
+	const likePost = useMutation(
+		trpc.postsRouter.likePost.mutationOptions({
+			onMutate: ({ postId }) => {
+				// findAll 쿼리 캐시에서 해당 게시물의 isLiked/likes를 토글하여 즉시 UI에 반영
+				queryClient.setQueryData(trpc.postsRouter.findAll.queryKey(), (old) => {
+					if (!old) return old;
+
+					return old.map((post) => {
+						if (post.id === postId) {
+							return {
+								...post,
+								isLiked: !post.isLiked,
+								likes: post.isLiked ? post.likes - 1 : post.likes + 1,
+							};
+						}
+
+						return post;
+					});
+				});
+			},
+		}),
+	);
 
 	/**
 	 * 게시물 생성 핸들러 — 2단계로 처리:
@@ -70,7 +94,8 @@ export default function Home() {
 					<div className="lg:col-span-2 space-y-6">
 						<Stories />
 						{/* posts.data가 아직 없으면(로딩 중) 빈 배열을 전달하여 빈 피드 렌더링 */}
-						<Feed posts={posts.data || []} />
+						{/* onLikePost: 좋아요 클릭 시 likePost mutation 실행 (like/unlike 토글) */}
+						<Feed posts={posts.data || []} onLikePost={(postId) => likePost.mutate({ postId })} />
 					</div>
 					{/* 사이드바 영역 - 대형화면에서 스크롤 시 고정 */}
 					<div className="lg:sticky lg:top-8 lg:h-fit">

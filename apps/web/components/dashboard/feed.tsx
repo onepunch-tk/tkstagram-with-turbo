@@ -15,14 +15,19 @@ interface Post {
 	likes: number;
 	comments: number;
 	timestamp: string;
+	isLiked?: boolean;
 }
 
-/** Feed 컴포넌트 props — 부모(Home)에서 tRPC 쿼리로 조회한 게시물 배열을 전달받음 */
+/**
+ * Feed 컴포넌트 props — 부모(Home)에서 tRPC 쿼리로 조회한 게시물 배열을 전달받음
+ * onLikePost: 좋아요 토글 핸들러 — 컴포넌트를 "dumb"하게 유지하기 위해 부모에서 주입
+ */
 interface FeedProps {
 	posts: Post[];
+	onLikePost: (postId: number) => void;
 }
 
-export default function Feed({ posts }: FeedProps) {
+export default function Feed({ posts, onLikePost }: FeedProps) {
 	return (
 		<div className="space-y-6">
 			{posts.map((post) => (
@@ -57,8 +62,16 @@ export default function Feed({ posts }: FeedProps) {
 					<div className="p-4 space-y-3">
 						<div className="flex items-center justify-between">
 							<div className="flex items-center space-x-4">
-								<Button variant="ghost" size="sm" onClick={() => {}} className="p-0 h-auto">
-									<Heart className="w-6 h-6 text-foreground" />
+								{/* 좋아요 버튼 — isLiked 상태에 따라 채워진/빈 하트 렌더링 */}
+							<Button
+									variant="ghost"
+									size="sm"
+									onClick={() => onLikePost(post.id)}
+									className="p-0 h-auto"
+								>
+									<Heart
+										className={`w-6 h-6 ${post.isLiked ? "fill-red-500 text-red-500" : "text-foreground"}`}
+									/>
 								</Button>
 								<Button variant="ghost" size="sm" onClick={() => {}} className="p-0 h-auto">
 									<MessageCircle className="w-6 h-6 text-foreground" />
@@ -76,7 +89,9 @@ export default function Feed({ posts }: FeedProps) {
 							<div className="text-sm text-muted-foreground">View all {post.comments} comments</div>
 						)}
 
-						<div className="text-sx text-muted-foreground uppercase">{post.timestamp}</div>
+						<div className="text-sx text-muted-foreground uppercase">
+							{new Date(post.timestamp).toLocaleDateString()}
+						</div>
 					</div>
 				</Card>
 			))}
