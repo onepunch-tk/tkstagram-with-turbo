@@ -1,0 +1,30 @@
+{
+	"compilerOptions": {
+		// 컴파일된 JS의 ECMAScript 버전 (ES2020 문법으로 출력)
+		"target": "ES2020",
+		// 모듈 시스템 (commonjs = require/module.exports 방식으로 출력)
+		"module": "commonjs",
+		// 사용 가능한 표준 라이브러리 타입 (ES2020 내장 API 타입 포함)
+		"lib": ["ES2020"],
+		// 모듈 경로 해석 방식 (node = Node.js의 require 해석 알고리즘 사용)
+		"moduleResolution": "node",
+		// 엄격한 타입 검사 활성화 (strictNullChecks, noImplicitAny 등 전부 포함)
+		"strict": true,
+		// CommonJS 모듈을 ES 모듈처럼 import 가능하게 함 (import x from 'cjs-module')
+		"esModuleInterop": true,
+		// node_modules 내 .d.ts 파일의 타입 검사를 건너뜀 (빌드 속도 향상)
+		"skipLibCheck": true,
+		// import 경로의 대소문자를 파일 시스템과 일치하도록 강제 (OS 간 호환성)
+		"forceConsistentCasingInFileNames": true,
+		// 컴파일 시 .d.ts 타입 선언 파일 생성 (외부 패키지가 타입을 참조할 수 있게)
+		"declaration": true,
+		// .d.ts.map 파일 생성 (IDE에서 타입 정의 → 원본 .ts 소스로 이동 가능)
+		"declarationMap": true,
+		// 컴파일 결과물 출력 디렉토리
+		"outDir": "./dist"
+	},
+	// 컴파일 대상 파일
+	"include": ["src/**/*"],
+	// 컴파일에서 제외할 디렉토리
+	"exclude": ["node_modules", "dist"]
+}
