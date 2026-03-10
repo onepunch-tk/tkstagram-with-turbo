@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as authSchema from "../auth/schema";
+import * as commentsSchema from "../comments/schemas/schema";
 import * as postsSchema from "../posts/schemas/schema";
 import { DATABASE_CONNECTION } from "./database-connection";
 
@@ -15,6 +16,7 @@ import { DATABASE_CONNECTION } from "./database-connection";
 export const schema = {
 	...authSchema,
 	...postsSchema,
+	...commentsSchema,
 };
 @Module({
 	// ConfigService를 사용하기 위해 ConfigModule 임포트
