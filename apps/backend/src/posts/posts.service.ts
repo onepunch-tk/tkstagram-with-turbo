@@ -38,9 +38,11 @@ export class PostsService {
 		const posts = await this.database.query.post.findMany({
 			// with: Drizzle ORM의 관계형 쿼리 — postRelations에서 설정한 user 관계를
 			// 활용하여 단일 쿼리로 게시물과 작성자 정보를 함께 조회
+			// comments 관계 추가 — 각 게시물의 댓글을 함께 조회하여 댓글 수 집계에 활용
 			with: {
 				user: true,
 				likes: true,
+				comments: true,
 			},
 			// 최신 게시물이 먼저 오도록 createdAt 내림차순 정렬
 			orderBy: [desc(post.createdAt)],
@@ -59,7 +61,7 @@ export class PostsService {
 			likes: savedPost.likes.length,
 			caption: savedPost.caption,
 			timestamp: savedPost.createdAt.toISOString(),
-			comments: 0,
+			comments: savedPost.comments.length,
 			isLiked: savedPost.likes.some((like) => like.userId === userId),
 		}));
 	}

@@ -1,9 +1,15 @@
 import { X } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import FileUploadArea from "@/components/ui/file-upload-area";
 import { getImageUrl } from "@/lib/image.client";
-import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
-import FileUploadArea from "../ui/file-upload-area";
 
 /**
  * PhotoUpload 컴포넌트 Props

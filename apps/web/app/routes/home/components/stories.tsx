@@ -1,7 +1,7 @@
 import { User } from "lucide-react";
 import { authClient } from "@/app/routes/auth/lib/auth-client";
+import { Card } from "@/components/ui/card";
 import { getImageUrl } from "@/lib/image.client";
-import { Card } from "../ui/card";
 
 // TODO: tRPC 연동 후 백엔드 스키마로 대체 예정
 interface Story {

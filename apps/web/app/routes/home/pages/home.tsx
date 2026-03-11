@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import Feed from "@/components/dashboard/feed";
-import PhotoUpload from "@/components/dashboard/photo-upload";
-import SideBar from "@/components/dashboard/sidebar";
-import Stories from "@/components/dashboard/stories";
 import Fab from "@/components/ui/fab";
 import { useTRPC } from "@/lib/trpc/client";
+import Feed from "../components/feed";
+import PhotoUpload from "../components/photo-upload";
+import SideBar from "../components/sidebar";
+import Stories from "../components/stories";
 import type { Route } from "./+types/home";
 
 export function meta(_args: Route.MetaArgs) {
@@ -59,6 +59,51 @@ export default function Home() {
 		}),
 	);
 
+	// 댓글 생성 mutation — onSuccess에서 두 가지 캐시 업데이트 수행:
+	// 1) 해당 게시물의 댓글 목록 캐시 무효화 → 리페치
+	// 2) findAll 캐시에서 해당 게시물의 comments count를 +1 인메모리 업데이트
+	const createComment = useMutation(
+		trpc.commentsRouter.create.mutationOptions({
+			onSuccess: (_, variables) => {
+				queryClient.invalidateQueries({
+					queryKey: trpc.commentsRouter.findByPostId.queryKey({ postId: variables.postId }),
+				});
+
+				// findAll 캐시에서 해당 게시물의 댓글 수만 +1로 직접 갱신 (리페치 없이)
+				queryClient.setQueryData(trpc.postsRouter.findAll.queryKey(), (old) => {
+					if (!old) return old;
+
+					return old.map((post) => {
+						if (post.id === variables.postId) {
+							return {
+								...post,
+								comments: post.comments + 1,
+							};
+						}
+
+						return post;
+					});
+				});
+			},
+		}),
+	);
+
+	// 댓글 삭제 mutation — delete input에 postId가 없으므로 타겟 무효화 불가
+	// 모든 댓글 쿼리와 게시물 목록 쿼리를 전체 무효화하여 리페치
+	const deleteComment = useMutation(
+		trpc.commentsRouter.delete.mutationOptions({
+			onSuccess: () => {
+				queryClient.invalidateQueries({
+					queryKey: trpc.commentsRouter.findByPostId.queryKey(),
+				});
+
+				queryClient.invalidateQueries({
+					queryKey: trpc.postsRouter.findAll.queryKey(),
+				});
+			},
+		}),
+	);
+
 	/**
 	 * 게시물 생성 핸들러 — 2단계로 처리:
 	 * 1) 이미지 파일을 REST 엔드포인트(/api/upload/image)로 업로드하여 파일명 획득
@@ -95,7 +140,16 @@ export default function Home() {
 						<Stories />
 						{/* posts.data가 아직 없으면(로딩 중) 빈 배열을 전달하여 빈 피드 렌더링 */}
 						{/* onLikePost: 좋아요 클릭 시 likePost mutation 실행 (like/unlike 토글) */}
-						<Feed posts={posts.data || []} onLikePost={(postId) => likePost.mutate({ postId })} />
+						<Feed
+							posts={posts.data || []}
+							onLikePost={(postId) => likePost.mutate({ postId })}
+							onAddComment={(postId, text) => {
+								createComment.mutate({ postId, text });
+							}}
+							onDeleteComment={(commentId) => {
+								deleteComment.mutate({ commentId });
+							}}
+						/>
 					</div>
 					{/* 사이드바 영역 - 대형화면에서 스크롤 시 고정 */}
 					<div className="lg:sticky lg:top-8 lg:h-fit">

@@ -3,11 +3,11 @@ import { Camera, LogOut, User } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { authClient } from "@/app/routes/auth/lib/auth-client";
+import ThemeToggle from "@/components/theme/theme-toggle";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { getImageUrl } from "@/lib/image.client";
 import { useTRPC } from "@/lib/trpc/client";
-import ThemeToggle from "../theme/theme-toggle";
-import { Button } from "../ui/button";
-import { Card } from "../ui/card";
 import AvatarUpload from "./avatar-upload";
 
 interface SuggestedUser {
