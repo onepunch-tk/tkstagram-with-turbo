@@ -104,6 +104,40 @@ export default function Home() {
 		}),
 	);
 
+	// tRPC 스토리 쿼리 — 24시간 이내의 활성 스토리를 사용자별 그룹으로 조회
+	const stories = useQuery(trpc.storiesRouter.getStories.queryOptions());
+	// 스토리 생성 mutation — 성공 시 getStories 캐시 무효화로 스토리 목록 자동 갱신
+	const createStory = useMutation(
+		trpc.storiesRouter.create.mutationOptions({
+			onSuccess: () => {
+				queryClient.invalidateQueries({
+					queryKey: trpc.storiesRouter.getStories.queryKey(),
+				});
+			},
+		}),
+	);
+
+	// 스토리 업로드 핸들러 — 게시물과 동일한 2단계 처리:
+	// 1) REST /api/upload/image로 파일 업로드 → 파일명 획득
+	// 2) tRPC create mutation으로 스토리 레코드 생성
+	const handleStoryUpload = async (file: File) => {
+		const formData = new FormData();
+		formData.append("image", file);
+
+		const uploadResponse = await fetch("/api/upload/image", {
+			method: "POST",
+			body: formData,
+		});
+
+		if (!uploadResponse.ok) {
+			throw new Error("Failed to upload image");
+		}
+
+		const { filename } = await uploadResponse.json();
+
+		await createStory.mutateAsync({ image: filename });
+	};
+
 	/**
 	 * 게시물 생성 핸들러 — 2단계로 처리:
 	 * 1) 이미지 파일을 REST 엔드포인트(/api/upload/image)로 업로드하여 파일명 획득
@@ -137,7 +171,7 @@ export default function Home() {
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 					{/* 메인 콘텐츠 영역 (2열 차지) - Stories + Feed */}
 					<div className="lg:col-span-2 space-y-6">
-						<Stories />
+						<Stories onStoryUpload={handleStoryUpload} storyGroups={stories.data || []} />
 						{/* posts.data가 아직 없으면(로딩 중) 빈 배열을 전달하여 빈 피드 렌더링 */}
 						{/* onLikePost: 좋아요 클릭 시 likePost mutation 실행 (like/unlike 토글) */}
 						<Feed

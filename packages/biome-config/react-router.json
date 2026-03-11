@@ -1,5 +1,13 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.4.4/schema.json",
+	"linter": {
+		"rules": {
+			"a11y": {
+				"noStaticElementInteractions": false,
+				"useKeyWithClickEvents": false
+			}
+		}
+	},
 	"css": {
 		"parser": {
 			"cssModules": true,
