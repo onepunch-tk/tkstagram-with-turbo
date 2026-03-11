@@ -5,6 +5,7 @@ import { Pool } from "pg";
 import * as authSchema from "../auth/schema";
 import * as commentsSchema from "../comments/schemas/schema";
 import * as postsSchema from "../posts/schemas/schema";
+import * as storiesSchema from "../stories/schemas/schema";
 import { DATABASE_CONNECTION } from "./database-connection";
 
 /**
@@ -17,6 +18,7 @@ export const schema = {
 	...authSchema,
 	...postsSchema,
 	...commentsSchema,
+	...storiesSchema,
 };
 @Module({
 	// ConfigService를 사용하기 위해 ConfigModule 임포트

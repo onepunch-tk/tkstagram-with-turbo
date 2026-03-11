@@ -36,6 +36,13 @@
       "when": 1773124292472,
       "tag": "0004_unique_rogue",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1773210727905,
+      "tag": "0005_safe_songbird",
+      "breakpoints": true
     }
   ]
 }

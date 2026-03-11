@@ -15,6 +15,7 @@ import { DATABASE_CONNECTION } from "./database/database-connection";
 import { PostsModule } from "./posts/posts.module";
 import { UploadModule } from "./upload/upload.module";
 import { CommentsModule } from './comments/comments.module';
+import { StoriesModule } from './stories/stories.module';
 
 @Module({
 	imports: [
@@ -69,6 +70,8 @@ import { CommentsModule } from './comments/comments.module';
 		UploadModule,
 		// 댓글 기능 모듈 (댓글 CRUD 비즈니스 로직 및 tRPC 라우터)
 		CommentsModule,
+		// 스토리 기능 모듈 (24시간 만료 이미지 업로드 및 사용자별 그룹 조회)
+		StoriesModule,
 	],
 	controllers: [AppController],
 	providers: [
