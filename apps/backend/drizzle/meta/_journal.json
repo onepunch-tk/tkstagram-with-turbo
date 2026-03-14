@@ -50,6 +50,13 @@
       "when": 1773463053944,
       "tag": "0006_absent_tattoo",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1773485705391,
+      "tag": "0007_illegal_true_believers",
+      "breakpoints": true
     }
   ]
 }
