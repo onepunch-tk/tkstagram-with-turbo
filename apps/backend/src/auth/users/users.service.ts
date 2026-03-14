@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
-import { UpdateProfileInput } from "@repo/trpc/schemas";
+import { UpdateProfileInput, UserProfile } from "@repo/trpc/schemas";
 import { and, count, eq, exists, ne, notInArray, sql } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { schema } from "../../database/database.module";
@@ -10,7 +10,6 @@ import { follow, user } from "../schema";
 @Injectable()
 export class UsersService {
 	constructor(
-		// PostsService와 동일한 패턴으로 Drizzle ORM DB 연결 주입
 		@Inject(DATABASE_CONNECTION) private readonly database: NodePgDatabase<typeof schema>,
 	) {}
 
@@ -74,7 +73,7 @@ export class UsersService {
 				follower: {
 					columns: {
 						id: true,
-						displayName: true,
+						name: true,
 					},
 				},
 			},
@@ -89,7 +88,7 @@ export class UsersService {
 				following: {
 					columns: {
 						id: true,
-						displayName: true,
+						name: true,
 					},
 				},
 			},
@@ -107,14 +106,14 @@ export class UsersService {
 			where: and(ne(user.id, userId), notInArray(user.id, followingSq)),
 			columns: {
 				id: true,
-				displayName: true,
+				name: true,
 			},
 			limit: 5,
 		});
 	}
 
 	// 유저 프로필 조회: 정적 컬럼 + 서브쿼리 기반 계산 컬럼(팔로워/팔로잉/게시글 수, 팔로우 여부)을 단일 쿼리로 반환
-	async getUserProfile(userId: string, currentUserId: string) {
+	async getUserProfile(userId: string, currentUserId: string): Promise<UserProfile> {
 		const followerCountSq = this.database
 			.select({ count: count().mapWith(Number) })
 			.from(follow)
@@ -139,7 +138,6 @@ export class UsersService {
 			.select({
 				id: user.id,
 				name: user.name,
-				displayName: user.displayName,
 				image: user.image,
 				bio: user.bio,
 				website: user.website,

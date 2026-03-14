@@ -11,8 +11,6 @@ export const user = pgTable("user", {
 	email: text("email").notNull().unique(),
 	emailVerified: boolean("email_verified").default(false).notNull(),
 	image: text("image"),
-	// 프로필 페이지에서 사용할 추가 사용자 정보 필드
-	displayName: text("display_name"),
 	bio: text("bio"),
 	website: text("website"),
 	createdAt: timestamp("created_at").defaultNow().notNull(),

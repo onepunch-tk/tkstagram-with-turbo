@@ -5,7 +5,7 @@ import { z } from "zod";
 // 팔로워/팔로잉/추천 유저 목록에서 사용하는 최소 유저 정보
 export const userSchema = z.object({
 	id: z.string(),
-	displayName: z.string(),
+	name: z.string(),
 });
 
 // 팔로우/언팔로우/프로필 조회 등 여러 프로시저에서 공유하는 입력 스키마
@@ -16,8 +16,6 @@ export const userIdSchema = z.object({
 // 프로필 수정 입력: 모든 필드가 optional이므로 부분 업데이트 가능
 export const updateProfileSchema = z.object({
 	name: z.string().optional(),
-	displayName: z.string().optional(),
-	username: z.string().optional(),
 	bio: z.string().optional(),
 	website: z.string().optional(),
 });
@@ -26,8 +24,6 @@ export const updateProfileSchema = z.object({
 export const userProfileSchema = z.object({
 	id: z.string(),
 	name: z.string(),
-	displayName: z.string(),
-	username: z.string(),
 	bio: z.string().nullable(),
 	website: z.string().nullable(),
 	image: z.string().nullable(),
