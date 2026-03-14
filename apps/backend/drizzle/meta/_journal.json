@@ -43,6 +43,13 @@
       "when": 1773210727905,
       "tag": "0005_safe_songbird",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1773463053944,
+      "tag": "0006_absent_tattoo",
+      "breakpoints": true
     }
   ]
 }
