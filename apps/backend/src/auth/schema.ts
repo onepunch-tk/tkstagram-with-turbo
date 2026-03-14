@@ -82,7 +82,7 @@ export const verification = pgTable(
 );
 
 // 팔로우 관계를 저장하는 테이블
-// followerId: 팔로우를 당하는 대상 유저, followingId: 팔로우를 한 유저
+// 단방향 팔로우: followerId가 followingId를 팔로우하는 관계
 // 복합 기본키(followerId + followingId)로 동일한 팔로우 관계의 중복 레코드를 방지
 export const follow = pgTable(
 	"follow",
