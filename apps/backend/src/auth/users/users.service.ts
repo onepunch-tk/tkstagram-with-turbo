@@ -115,17 +115,17 @@ export class UsersService {
 	// 유저 프로필 조회: 정적 컬럼 + 서브쿼리 기반 계산 컬럼(팔로워/팔로잉/게시글 수, 팔로우 여부)을 단일 쿼리로 반환
 	async getUserProfile(userId: string, currentUserId: string): Promise<UserProfile> {
 		const followerCountSq = this.database
-			.select({ count: count().mapWith(Number) })
+			.select({ count: count() })
 			.from(follow)
 			.where(eq(follow.followingId, user.id));
 
 		const followingCountSq = this.database
-			.select({ count: count().mapWith(Number) })
+			.select({ count: count() })
 			.from(follow)
 			.where(eq(follow.followerId, user.id));
 
 		const postCountSq = this.database
-			.select({ count: count().mapWith(Number) })
+			.select({ count: count() })
 			.from(post)
 			.where(eq(post.userId, user.id));
 
@@ -141,9 +141,9 @@ export class UsersService {
 				image: user.image,
 				bio: user.bio,
 				website: user.website,
-				followerCount: sql<number>`(${followerCountSq})`,
-				followingCount: sql<number>`(${followingCountSq})`,
-				postCount: sql<number>`(${postCountSq})`,
+				followerCount: sql<number>`(${followerCountSq})::int`,
+				followingCount: sql<number>`(${followingCountSq})::int`,
+				postCount: sql<number>`(${postCountSq})::int`,
 				isFollowing: exists(isFollowingSq).mapWith(Boolean),
 			})
 			.from(user)
