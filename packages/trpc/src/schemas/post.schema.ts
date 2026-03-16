@@ -9,6 +9,10 @@ export const createPostSchema = z.object({
 	caption: z.string().min(1, "Caption is required"),
 });
 
+export const findAllPostsSchema = z.object({
+	userId: z.string().optional(),
+});
+
 /**
  * TRPC 서버에서 반환하는 게시물 응답 스키마
  * - DB의 userId 대신 username, avatar를 포함한 user 객체로 확장
@@ -39,3 +43,4 @@ export const likePostSchema = z.object({
 export type Post = z.infer<typeof postSchema>;
 export type CreatePostInput = z.infer<typeof createPostSchema>;
 export type LikePostInput = z.infer<typeof likePostSchema>;
+export type FindAllPostsInput = z.infer<typeof findAllPostsSchema>;

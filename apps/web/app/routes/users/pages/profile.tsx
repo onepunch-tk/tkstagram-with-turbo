@@ -1,9 +1,11 @@
+import type { Post } from "@repo/trpc/schemas";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useParams } from "react-router";
 import { useTRPC } from "@/lib/trpc/client";
 import ProfileHeader from "../components/profile-header";
 import ProfileNavigation from "../components/profile-navigation";
+import ProfileTabs from "../components/profile-tabs";
 
 export default function Profile() {
 	const { userId } = useParams<{ userId: string }>();
@@ -25,6 +27,8 @@ export default function Profile() {
 		...trpc.usersRouter.getUserProfile.queryOptions({ userId: userId as string }),
 		retry: false,
 	});
+
+	const { data: posts = [] } = useQuery(trpc.postsRouter.findAll.queryOptions({ userId }));
 
 	const unfollowMutation = useMutation(
 		trpc.usersRouter.unfollow.mutationOptions({
@@ -57,6 +61,8 @@ export default function Profile() {
 		}
 	};
 
+	const handlePostClick = (_post: Post) => {};
+
 	if (isLoading) {
 		return (
 			<div className="min-h-screen flex items-center justify-center">
@@ -87,6 +93,13 @@ export default function Profile() {
 					onOpenFollowings={() => setFollowersFollowingModal({ open: true, type: "following" })}
 					isFollowLoading={followMutation.isPending || unfollowMutation.isPending}
 					profile={profile}
+				/>
+
+				<ProfileTabs
+					userPosts={posts}
+					savedPosts={[]}
+					name={profile.name}
+					onPostClick={handlePostClick}
 				/>
 			</div>
 		</div>

@@ -34,7 +34,7 @@ export class PostsService {
 	 * 전체 게시물 목록을 DB에서 조회하여 TRPC 응답 형식으로 반환
 	 * @param userId - 현재 요청 사용자 ID (isLiked 계산에 사용)
 	 */
-	async findAll(userId: string): Promise<Post[]> {
+	async findAll(userId: string, postUserId?: string): Promise<Post[]> {
 		const posts = await this.database.query.post.findMany({
 			// with: Drizzle ORM의 관계형 쿼리 — postRelations에서 설정한 user 관계를
 			// 활용하여 단일 쿼리로 게시물과 작성자 정보를 함께 조회
@@ -44,6 +44,7 @@ export class PostsService {
 				likes: true,
 				comments: true,
 			},
+			...(postUserId && { where: eq(post.userId, postUserId) }),
 			// 최신 게시물이 먼저 오도록 createdAt 내림차순 정렬
 			orderBy: [desc(post.createdAt)],
 		});

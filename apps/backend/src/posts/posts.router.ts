@@ -1,6 +1,8 @@
 import {
 	type CreatePostInput,
 	createPostSchema,
+	type FindAllPostsInput,
+	findAllPostsSchema,
 	type LikePostInput,
 	likePostSchema,
 	postSchema,
@@ -31,9 +33,9 @@ export class PostsRouter {
 	}
 
 	/** Query: 전체 게시물 목록 조회 (output → postSchema 배열) */
-	@Query({ output: z.array(postSchema) })
-	async findAll(@Ctx() context: AppContext) {
-		return this.postsService.findAll(context.user.id);
+	@Query({ input: findAllPostsSchema, output: z.array(postSchema) })
+	async findAll(@Input() findAllPostsInput: FindAllPostsInput, @Ctx() context: AppContext) {
+		return this.postsService.findAll(context.user.id, findAllPostsInput.userId);
 	}
 
 	/**
