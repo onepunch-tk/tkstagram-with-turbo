@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useParams } from "react-router";
 import { useTRPC } from "@/lib/trpc/client";
+import PostModal from "../components/post-modal";
 import ProfileHeader from "../components/profile-header";
 import ProfileNavigation from "../components/profile-navigation";
 import ProfileTabs from "../components/profile-tabs";
@@ -10,6 +11,8 @@ import ProfileTabs from "../components/profile-tabs";
 export default function Profile() {
 	const { userId } = useParams<{ userId: string }>();
 	const [_isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+	const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [_followersFollowingModal, setFollowersFollowingModal] = useState<{
 		open: boolean;
 		type: "followers" | "following";
@@ -61,7 +64,10 @@ export default function Profile() {
 		}
 	};
 
-	const handlePostClick = (_post: Post) => {};
+	const handlePostClick = (post: Post) => {
+		setSelectedPost(post);
+		setIsModalOpen(true);
+	};
 
 	if (isLoading) {
 		return (
@@ -102,6 +108,14 @@ export default function Profile() {
 					onPostClick={handlePostClick}
 				/>
 			</div>
+			{selectedPost && (
+				<PostModal
+					open={isModalOpen}
+					onOpenChange={setIsModalOpen}
+					initialPost={selectedPost}
+					postUserId={profile.id}
+				/>
+			)}
 		</div>
 	);
 }

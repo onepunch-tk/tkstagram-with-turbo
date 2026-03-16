@@ -30,6 +30,7 @@ export class CommentsService {
 			id: comment.id,
 			text: comment.text,
 			user: {
+				id: comment.user.id,
 				username: comment.user.name,
 				avatar: comment.user.image,
 			},
