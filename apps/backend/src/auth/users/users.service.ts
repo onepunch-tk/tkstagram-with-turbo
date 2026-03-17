@@ -185,12 +185,14 @@ export class UsersService {
 			.from(follow)
 			.where(eq(follow.followerId, userId));
 
-		return this.database
-			.select(this.profileSelect(userId))
-			.from(user)
-			// 자기 자신 제외 + 이미 팔로우 중인 유저 제외
-			.where(and(ne(user.id, userId), notInArray(user.id, followingSq)))
-			.limit(5);
+		return (
+			this.database
+				.select(this.profileSelect(userId))
+				.from(user)
+				// 자기 자신 제외 + 이미 팔로우 중인 유저 제외
+				.where(and(ne(user.id, userId), notInArray(user.id, followingSq)))
+				.limit(5)
+		);
 	}
 
 	/**

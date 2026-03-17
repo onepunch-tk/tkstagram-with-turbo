@@ -5,6 +5,7 @@ import { useParams } from "react-router";
 import { useTRPC } from "@/lib/trpc/client";
 import { authClient } from "../../auth/lib/auth-client";
 import EditProfileModal from "../components/edit-profile-modal";
+import FollowersFollowingModal from "../components/followes-following-modal";
 import PostModal from "../components/post-modal";
 import ProfileHeader from "../components/profile-header";
 import ProfileNavigation from "../components/profile-navigation";
@@ -16,7 +17,7 @@ export default function Profile() {
 	const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 	const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [_followersFollowingModal, setFollowersFollowingModal] = useState<{
+	const [followersFollowingModal, setFollowersFollowingModal] = useState<{
 		open: boolean;
 		type: "followers" | "following";
 	}>({
@@ -135,6 +136,15 @@ export default function Profile() {
 				onOpenChange={setIsEditProfileOpen}
 				profile={profile}
 				onSave={handleSaveProfile}
+			/>
+
+			<FollowersFollowingModal
+				open={followersFollowingModal.open}
+				onOpenChange={(open) => {
+					setFollowersFollowingModal({ ...followersFollowingModal, open });
+				}}
+				userId={profile.id}
+				type={followersFollowingModal.type}
 			/>
 		</div>
 	);
