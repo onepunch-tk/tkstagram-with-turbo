@@ -1,8 +1,9 @@
-import type { Post } from "@repo/trpc/schemas";
+import type { Post, UpdateProfileInput } from "@repo/trpc/schemas";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useParams } from "react-router";
 import { useTRPC } from "@/lib/trpc/client";
+import EditProfileModal from "../components/edit-profile-modal";
 import PostModal from "../components/post-modal";
 import ProfileHeader from "../components/profile-header";
 import ProfileNavigation from "../components/profile-navigation";
@@ -10,7 +11,7 @@ import ProfileTabs from "../components/profile-tabs";
 
 export default function Profile() {
 	const { userId } = useParams<{ userId: string }>();
-	const [_isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+	const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 	const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [_followersFollowingModal, setFollowersFollowingModal] = useState<{
@@ -37,7 +38,7 @@ export default function Profile() {
 		trpc.usersRouter.unfollow.mutationOptions({
 			onSuccess: () => {
 				queryClient.invalidateQueries({
-					queryKey: trpc.usersRouter.getUserProfile.queryKey({ userId: userId }),
+					queryKey: trpc.usersRouter.getUserProfile.queryKey({ userId }),
 				});
 			},
 		}),
@@ -47,7 +48,17 @@ export default function Profile() {
 		trpc.usersRouter.follow.mutationOptions({
 			onSuccess: () => {
 				queryClient.invalidateQueries({
-					queryKey: trpc.usersRouter.getUserProfile.queryKey({ userId: userId }),
+					queryKey: trpc.usersRouter.getUserProfile.queryKey({ userId }),
+				});
+			},
+		}),
+	);
+
+	const updateProfileMutation = useMutation(
+		trpc.usersRouter.updateProfile.mutationOptions({
+			onSuccess: () => {
+				queryClient.invalidateQueries({
+					queryKey: trpc.usersRouter.getUserProfile.queryKey({ userId }),
 				});
 			},
 		}),
@@ -67,6 +78,10 @@ export default function Profile() {
 	const handlePostClick = (post: Post) => {
 		setSelectedPost(post);
 		setIsModalOpen(true);
+	};
+
+	const handleSaveProfile = async (data: UpdateProfileInput) => {
+		await updateProfileMutation.mutateAsync(data);
 	};
 
 	if (isLoading) {
@@ -109,13 +124,15 @@ export default function Profile() {
 				/>
 			</div>
 			{selectedPost && (
-				<PostModal
-					open={isModalOpen}
-					onOpenChange={setIsModalOpen}
-					initialPost={selectedPost}
-					postUserId={profile.id}
-				/>
+				<PostModal open={isModalOpen} onOpenChange={setIsModalOpen} initialPost={selectedPost} />
 			)}
+
+			<EditProfileModal
+				open={isEditProfileOpen}
+				onOpenChange={setIsEditProfileOpen}
+				profile={profile}
+				onSave={handleSaveProfile}
+			/>
 		</div>
 	);
 }

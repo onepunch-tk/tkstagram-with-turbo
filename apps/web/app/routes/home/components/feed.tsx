@@ -1,6 +1,7 @@
 import type { Post } from "@repo/trpc/schemas";
 import { Heart, MessageCircle, User } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getImageUrl } from "@/lib/image.client";
@@ -18,6 +19,7 @@ interface FeedProps {
 }
 
 export default function Feed({ posts, onLikePost, onAddComment, onDeleteComment }: FeedProps) {
+	const navigate = useNavigate();
 	// 댓글 섹션이 펼쳐진 게시물의 ID를 Set으로 관리
 	// Set은 참조 비교이므로, 토글 시 new Set()으로 새 참조를 생성하여 리렌더 유발
 	const [expandedComments, setExpandedComments] = useState<Set<number>>(new Set());
@@ -42,20 +44,26 @@ export default function Feed({ posts, onLikePost, onAddComment, onDeleteComment 
 				<Card key={post.id} className="overflow-hidden">
 					<div className="flex items-center justify-between p-4">
 						<div className="flex items-center space-x-3">
-							{post.user.avatar ? (
-								<img
-									src={getImageUrl(post.user.avatar)}
-									alt={post.user.username}
-									width={64}
-									height={64}
-									className="w-8 h-8 rounded-full"
-								/>
-							) : (
-								<div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-									<User className="h-4 w-4 text-muted-foreground" />
-								</div>
-							)}
-							<span className="font-semibold text-sm">{post.user.username}</span>
+							<Button
+								variant={"ghost"}
+								onClick={() => navigate(`/users/${post.user.id}`)}
+								className="p-0"
+							>
+								{post.user.avatar ? (
+									<img
+										src={getImageUrl(post.user.avatar)}
+										alt={post.user.username}
+										width={64}
+										height={64}
+										className="w-8 h-8 rounded-full"
+									/>
+								) : (
+									<div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+										<User className="h-4 w-4 text-muted-foreground" />
+									</div>
+								)}
+								<span className="font-semibold text-sm">{post.user.username}</span>
+							</Button>
 						</div>
 					</div>
 
@@ -97,12 +105,24 @@ export default function Feed({ posts, onLikePost, onAddComment, onDeleteComment 
 
 						<div className="text-sm font-semibold">{post.likes} likse</div>
 						<div className="text-sm">
-							<span className="font-semibold">{post.user.username} </span>
-							{post.caption}
+							<Button
+								variant={"ghost"}
+								onClick={() => navigate(`/users/${post.user.id}`)}
+								className="p-0 h-auto font-semibold hover:bg-transparent hover:opacity-80"
+							>
+								<span className="font-semibold">{post.user.username} </span>
+							</Button>
+							{` ${post.caption}`}
 						</div>
 
 						{post.comments > 0 && (
-							<div className="text-sm text-muted-foreground">View all {post.comments} comments</div>
+							<Button
+								variant={"ghost"}
+								onClick={() => toggleComments(post.id)}
+								className="p-0 h-auto text-sm text-muted-foreground hover:bg-transparent hover:opacity-80"
+							>
+								View all {post.comments} comments
+							</Button>
 						)}
 
 						<div className="text-sx text-muted-foreground uppercase">

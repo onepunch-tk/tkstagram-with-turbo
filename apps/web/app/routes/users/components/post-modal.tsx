@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Heart, Trash2, User } from "lucide-react";
 import type { SubmitEvent } from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -14,10 +15,10 @@ interface PostModalProps {
 	initialPost: Post;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	postUserId: string;
 }
 
-export default function PostModal({ initialPost, open, onOpenChange, postUserId }: PostModalProps) {
+export default function PostModal({ initialPost, open, onOpenChange }: PostModalProps) {
+	const navigate = useNavigate();
 	const [commentText, setCommentText] = useState("");
 	const trpc = useTRPC();
 	const queryClient = useQueryClient();
@@ -25,11 +26,9 @@ export default function PostModal({ initialPost, open, onOpenChange, postUserId 
 	// initialPost는 정적 prop이라 좋아요 등 캐시 갱신이 반영되지 않음
 	// 쿼리 캐시에서 최신 데이터를 구독하여 실시간 UI 업데이트를 보장
 	const { data: allPosts } = useQuery(
-		trpc.postsRouter.findAll.queryOptions({ userId: postUserId }),
+		trpc.postsRouter.findAll.queryOptions({ userId: initialPost.user.id }),
 	);
 	const post = allPosts?.find((p) => p.id === initialPost.id) ?? initialPost;
-	console.log(post.id);
-
 	const { data: comments = [] } = useQuery(
 		trpc.commentsRouter.findByPostId.queryOptions({ postId: post.id }),
 	);
@@ -51,10 +50,10 @@ export default function PostModal({ initialPost, open, onOpenChange, postUserId 
 		trpc.postsRouter.likePost.mutationOptions({
 			onSuccess: () => {
 				queryClient.invalidateQueries({
-					queryKey: trpc.postsRouter.findAll.queryKey({ userId: postUserId }),
+					queryKey: trpc.postsRouter.findAll.queryKey({ userId: post.user.id }),
 				});
 				queryClient.invalidateQueries({
-					queryKey: trpc.usersRouter.getUserProfile.queryKey({ userId: postUserId }),
+					queryKey: trpc.usersRouter.getUserProfile.queryKey({ userId: post.user.id }),
 				});
 			},
 		}),
@@ -67,7 +66,7 @@ export default function PostModal({ initialPost, open, onOpenChange, postUserId 
 					queryKey: trpc.commentsRouter.findByPostId.queryKey({ postId: variables.postId }),
 				});
 				queryClient.invalidateQueries({
-					queryKey: trpc.postsRouter.findAll.queryKey({ userId: postUserId }),
+					queryKey: trpc.postsRouter.findAll.queryKey({ userId: post.user.id }),
 				});
 				setCommentText("");
 			},
@@ -105,7 +104,11 @@ export default function PostModal({ initialPost, open, onOpenChange, postUserId 
 					</div>
 					<div className="flex flex-col h-full bg-background">
 						<div className="flex items-center justify-between p-4 border-b">
-							<Button variant={"ghost"} className="flex items-center space-x-3 h-auto p-0">
+							<Button
+								variant={"ghost"}
+								onClick={() => navigate(`/users/${post.user.id}`)}
+								className="flex items-center space-x-3 h-auto p-0"
+							>
 								{post.user.avatar ? (
 									<img
 										src={getImageUrl(post.user.avatar)}
@@ -127,6 +130,7 @@ export default function PostModal({ initialPost, open, onOpenChange, postUserId 
 							<div className="flex space-x-3 mb-4">
 								<Button
 									variant={"ghost"}
+									onClick={() => navigate(`/users/${post.user.id}`)}
 									className="shrink-0 p-0 h-auto hover:opacity-80 hover:bg-transparent"
 								>
 									{post.user.avatar ? (
@@ -149,6 +153,7 @@ export default function PostModal({ initialPost, open, onOpenChange, postUserId 
 										<div>
 											<Button
 												variant={"ghost"}
+												onClick={() => navigate(`/users/${post.user.id}`)}
 												className="font-semibold mr-2 p-0 h-auto hover:opacity-80 hover:bg-transparent"
 											>
 												{post.user.username}
@@ -167,6 +172,7 @@ export default function PostModal({ initialPost, open, onOpenChange, postUserId 
 									<div key={comment.id} className="flex items-center space-x-2">
 										<Button
 											variant={"ghost"}
+											onClick={() => navigate(`/users/${comment.user.id}`)}
 											className="shrink-0 p-0 h-auto hover:opacity-80 hover:bg-transparent"
 										>
 											{comment.user.avatar ? (
@@ -188,12 +194,15 @@ export default function PostModal({ initialPost, open, onOpenChange, postUserId 
 												<div className="flex-1 min-w-0">
 													<Button
 														variant={"ghost"}
-														className="font-semibold text-sm p-0 h-auto hover:opacity-80 hover:bg-transparent"
+														onClick={() => navigate(`/users/${comment.user.id}`)}
+														className="font-semibold text-sm p-0 h-auto mt-1"
 													>
 														{comment.user.username}
 													</Button>
-													<p>{comment.text}</p>
-													<p>{new Date(comment.createdAt).toLocaleDateString()}</p>
+													<p className="text-sm wrap-break-word">{comment.text}</p>
+													<p className="text-xs text-muted-foreground mt-1">
+														{new Date(comment.createdAt).toLocaleDateString()}
+													</p>
 												</div>
 												{session?.user.id === comment.user.id && (
 													<Button

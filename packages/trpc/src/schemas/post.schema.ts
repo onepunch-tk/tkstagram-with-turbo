@@ -23,6 +23,7 @@ export const findAllPostsSchema = z.object({
 export const postSchema = z.object({
 	id: z.number(),
 	user: z.object({
+		id: z.string(),
 		username: z.string(),
 		avatar: z.string(),
 	}),

@@ -1,6 +1,7 @@
 import type { StoryGroup } from "@repo/trpc/schemas";
 import { ChevronLeft, ChevronRight, User, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { getImageUrl } from "@/lib/image.client";
@@ -19,6 +20,7 @@ export default function StoryViewer({
 	onOpenChange,
 	initialGroupIndex,
 }: StoryViewerProps) {
+	const navigate = useNavigate();
 	const [currentGroupIndex, setCurrentGroupIndex] = useState(initialGroupIndex); // 현재 보고 있는 스토리 그룹
 	const [currentStoryIndex, setCurrentStoryIndex] = useState(0); // 그룹 내 현재 스토리 인덱스
 	const [progress, setProgress] = useState(0); // 프로그레스 바 진행률 (0~100)
@@ -93,7 +95,7 @@ export default function StoryViewer({
 			>
 				<div className="relative w-full h-full flex items-center justify-center">
 					{/* 프로그레스 바 — 스토리 수만큼 분할, 현재 스토리는 progress%만큼 채움 */}
-				<div className="absolute top-0 left-0 right-0 z-20 flex gap-1 p-2">
+					<div className="absolute top-0 left-0 right-0 z-20 flex gap-1 p-2">
 						{currentGroup.stories.map((_, index) => (
 							<div
 								key={index.toString()}
@@ -115,9 +117,10 @@ export default function StoryViewer({
 					</div>
 
 					<div className="absolute top-4 left-0 right-0 z-20 flex items-center justify-between px-4 pt-2">
-						<button
-							type="button"
-							className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+						<Button
+							variant={"ghost"}
+							className="flex items-center space-x-3 h-auto p-0 hover:bg-transparent hover:opacity-80 transition-opacity"
+							onClick={() => navigate(`/users/${currentGroup.userId}`)}
 						>
 							{currentGroup.avatar ? (
 								<img
@@ -135,7 +138,7 @@ export default function StoryViewer({
 							<div>
 								<div className="text-white font-semibold text-sm">{currentGroup.username}</div>
 							</div>
-						</button>
+						</Button>
 
 						<div className="flex items-center gap-2">
 							<Button

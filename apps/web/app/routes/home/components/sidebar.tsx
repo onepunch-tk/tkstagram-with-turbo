@@ -84,7 +84,7 @@ export default function SideBar() {
 
 		const { filename } = await uploadResponse.json();
 		await authClient.updateUser({ image: filename });
-		await queryClient.invalidateQueries(trpc.postsRouter.findAll.queryOptions());
+		await queryClient.invalidateQueries(trpc.postsRouter.findAll.queryOptions({}));
 	};
 
 	return (
@@ -117,8 +117,16 @@ export default function SideBar() {
 					</div>
 
 					<div className="flex-1 min-w-0">
-						<div className="font-semibold truncate">{session?.user.email}</div>
-						<div className="text-sm text-muted-foreground truncate">{session?.user.name}</div>
+						<Button
+							variant={"ghost"}
+							className="text-left w-full h-auto p-0 hover:bg-transparent hover:opacity-80 transition-opacity"
+							onClick={() => navigate(`/users/${session?.user.id}`)}
+						>
+							<div className="flex-1 min-w-0">
+								<div className="font-semibold truncate">{session?.user.email}</div>
+								<div className="text-sm text-muted-foreground truncate">{session?.user.name}</div>
+							</div>
+						</Button>
 					</div>
 					<div className="flex items-center gap-1 sm:gap-2 shrink-0">
 						<ThemeToggle />

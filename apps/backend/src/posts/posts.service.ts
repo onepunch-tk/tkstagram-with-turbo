@@ -55,6 +55,7 @@ export class PostsService {
 		return posts.map((savedPost) => ({
 			id: savedPost.id,
 			user: {
+				id: savedPost.user.id,
 				username: savedPost.user.name,
 				avatar: savedPost.user.image || "",
 			},
