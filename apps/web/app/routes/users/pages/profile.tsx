@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useParams } from "react-router";
 import { useTRPC } from "@/lib/trpc/client";
+import { authClient } from "../../auth/lib/auth-client";
 import EditProfileModal from "../components/edit-profile-modal";
 import PostModal from "../components/post-modal";
 import ProfileHeader from "../components/profile-header";
@@ -11,6 +12,7 @@ import ProfileTabs from "../components/profile-tabs";
 
 export default function Profile() {
 	const { userId } = useParams<{ userId: string }>();
+	const { data: session } = authClient.useSession();
 	const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 	const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -113,6 +115,7 @@ export default function Profile() {
 					onOpenFollowers={() => setFollowersFollowingModal({ open: true, type: "followers" })}
 					onOpenFollowings={() => setFollowersFollowingModal({ open: true, type: "following" })}
 					isFollowLoading={followMutation.isPending || unfollowMutation.isPending}
+					isOwnProfile={profile.id === session?.user.id}
 					profile={profile}
 				/>
 

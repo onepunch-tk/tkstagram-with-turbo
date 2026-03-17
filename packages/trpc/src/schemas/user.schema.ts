@@ -2,12 +2,6 @@
 // BetterAuth 유저 스키마와 별도로, tRPC 응답에 필요한 필드만 포함
 import { z } from "zod";
 
-// 팔로워/팔로잉/추천 유저 목록에서 사용하는 최소 유저 정보
-export const userSchema = z.object({
-	id: z.string(),
-	name: z.string(),
-});
-
 // 팔로우/언팔로우/프로필 조회 등 여러 프로시저에서 공유하는 입력 스키마
 export const userIdSchema = z.object({
 	userId: z.string(),
